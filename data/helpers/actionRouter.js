@@ -65,7 +65,25 @@ router.delete("/:id", verifyId, (req, res) => {
     });
 });
 
-router.put("/:id", verifyId, (req, res) => {});
+router.put("/:id", verifyId, (req, res) => {
+  const actionInfo = req.body;
+
+  if (
+    !actionInfo.hasOwnProperty("project_id") ||
+    !actionInfo.hasOwnProperty("description") ||
+    !actionInfo.hasOwnProperty("notes")
+  ) {
+    next("error");
+  } else {
+    Actions.update(req.params.id, actionInfo)
+      .then((action) => {
+        res.status(200).json(action);
+      })
+      .catch((err) => {
+        next("error");
+      });
+  }
+});
 
 module.exports = router;
 
